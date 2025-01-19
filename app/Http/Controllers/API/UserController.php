@@ -5,11 +5,16 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\User as UserResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -24,12 +29,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // $this->authorize('create', User::class);
+        $this->authorize('create', User::class);
+
+        // return Auth::user();
         $user = new UserResource(User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            // 'role' => $request->role,
         ]));
-
         return $user->response()->setStatusCode(200);
     }
 
@@ -48,6 +57,8 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $iduser = User::findOrFail($id);
+        $this->authorize('update', $iduser);
         $user = new UserResource(User::findOrFail($id));
         $user->update($request->all());
 
@@ -59,6 +70,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $iduser = User::findOrFail($id);
+        $this->authorize('delete', $iduser);
         User::findOrFail($id)->delete();
         return 204;
     }

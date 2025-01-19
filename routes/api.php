@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\LessonController;
+use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\RelationshipController;
 use App\Http\Middleware\onceBasic;
 use App\Http\Middleware\OnceBasic as MiddlewareOnceBasic;
@@ -33,3 +34,4 @@ Route::any('user', function () {
     return 'Invalid URL. Please use /api/users for accessing the users API.';
 });
 Route::redirect('user', 'users');
+Route::get('/login', [LoginController::class, 'login']);

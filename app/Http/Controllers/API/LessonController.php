@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\Lesson as LessonResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class LessonController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -42,6 +45,8 @@ class LessonController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $idlesson = Lesson::findOrFail($id);
+        $this->authorize('update', $idlesson);
         $lesson = new LessonResource(Lesson::findOrFail($id));
         $lesson->update($request->all());
 
@@ -53,6 +58,8 @@ class LessonController extends Controller
      */
     public function destroy($id)
     {
+        $idlesson = Lesson::findOrFail($id);
+        $this->authorize('delete', $idlesson);
         Lesson::find($id)->delete();
         return 204;
     }
