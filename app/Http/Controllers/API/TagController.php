@@ -15,10 +15,11 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $limit = $request->input('limit') <= 50 ?  $request->input('limit') : 15;
 
-        $tag = TagResource::collection(Tag::all());
+        $tag = TagResource::collection(Tag::paginate($limit));
         return $tag->response()->setStatusCode(200);
     }
 
